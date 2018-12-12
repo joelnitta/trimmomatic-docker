@@ -16,18 +16,20 @@ ENV VERSION=0.38
 ENV DEST=$APPS_HOME/$APP_NAME
 
 RUN apt-get update && apt-get install -y \
-  unzip \
   default-jre \
+  unzip \
   wget \
-  && apt-get clean && apt-get purge \
-  && mkdir $APPS_HOME \
-  && wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/$APP_NAME-$VERSION.zip \
+  && apt-get clean && apt-get purge
+
+RUN mkdir $APPS_HOME
+
+RUN wget http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/$APP_NAME-$VERSION.zip \
   && unzip $APP_NAME-$VERSION.zip \
   && rm $APP_NAME-$VERSION.zip \
   && mkdir -p $DEST \
   && mv $APP_NAME-$VERSION $DEST/$VERSION \
   && printf '#!/bin/bash\njava -Xmx6g -jar ' > trimmomatic \
-  && echo $APPS_HOME/$APP_NAME/$VERSION/trimmomatic-$VERSION.jar >> trimmomatic \
+  && echo $APPS_HOME/$APP_NAME/$VERSION/trimmomatic-$VERSION.jar' $*' >> trimmomatic \
   && chmod +x trimmomatic \
   && mv trimmomatic /bin
 
